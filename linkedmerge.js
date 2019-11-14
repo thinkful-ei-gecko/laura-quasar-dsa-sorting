@@ -194,8 +194,17 @@ function mergeSort(linkedList) {
 
   const listSize = size(linkedList);
   const middle = Math.floor(listSize / 2);
-  let left = linkedList.slice(0, middle);
+  let left = linkedList;
+  let leftPointer = linkedList;
+  let leftCounter = 0;
+  while(leftCounter < middle){
+    leftCounter++;
+    leftPointer = leftPointer.next;
+  }
+
   let right = new LinkedList();
+  right.head = leftPointer.next;
+  leftPointer.next = null;
 
   left = mergeSort(left);
   right = mergeSort(right);
@@ -206,7 +215,11 @@ function merge(left, right, linkedList) {
   let leftIndex = 0;
   let rightIndex = 0;
   let outputIndex = 0;
-  while (leftIndex < left.length && rightIndex < right.length) {
+
+  let leftSize = size(left);
+  let rightSize = size(right);
+
+  while (leftIndex < leftSize && rightIndex < rightSize) {
     if (left[leftIndex] < right[rightIndex]) {
       linkedList[outputIndex++] = left[leftIndex++];
     }
@@ -215,11 +228,10 @@ function merge(left, right, linkedList) {
     }
   }
 
-  for (let i = leftIndex; i < left.length; i++) {
+  for (let i = leftIndex; i < leftSize; i++) {
     linkedList[outputIndex++] = left[i];
   }
-
-  for (let i = rightIndex; i < right.length; i++) {
+  for (let i = rightIndex; i < rightSize; i++) {
     linkedList[outputIndex++] = right[i];
   }
   return linkedList;
