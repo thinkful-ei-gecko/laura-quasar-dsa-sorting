@@ -1,3 +1,4 @@
+/* eslint-disable strict */
 class _Node {
   constructor(value, next) {
     this.value = value;
@@ -17,8 +18,7 @@ class LinkedList {
   insertLast(item) {
     if (this.head === null) {
       this.insertFirst(item);
-    }
-    else {
+    } else {
       let tempNode = this.head;
       while (tempNode.next !== null) {
         tempNode = tempNode.next;
@@ -30,44 +30,40 @@ class LinkedList {
   insertBefore(item, key) {
     if (!this.head) {
       this.insertFirst(item);
-    }
-    else {
+    } else {
       let currNode = this.head;
       let previousNode = this.head;
-      while ((currNode !== null) && (currNode.value !== key)) {
+      while (currNode !== null && currNode.value !== key) {
         previousNode = currNode;
         currNode = currNode.next;
       }
       if (currNode === null) {
-        console.log('Item not found');
+        console.log("Item not found");
         return;
       }
       if (currNode.value === key) {
         previousNode.next = new _Node(item, currNode);
       }
     }
-
   }
 
   insertAfter(item, key) {
     if (!this.head) {
       this.insertFirst(item);
-    }
-    else {
+    } else {
       let currNode = this.head;
       let previousNode = this.head;
-      while ((currNode !== null) && (currNode.value !== key)) {
+      while (currNode !== null && currNode.value !== key) {
         previousNode = currNode;
         currNode = currNode.next;
       }
       if (currNode === null) {
-        console.log('Item not found');
+        console.log("Item not found");
         return;
       }
       if (currNode.value === key) {
         let foundNode = currNode;
         let afterFoundNode = currNode.next;
-
 
         foundNode.next = new _Node(item, afterFoundNode);
       }
@@ -77,8 +73,7 @@ class LinkedList {
   insertAt(item, pos) {
     if (!this.head) {
       this.insertFirst(item);
-    }
-    else {
+    } else {
       let currNode = this.head;
       let previousNode = this.head;
 
@@ -103,12 +98,12 @@ class LinkedList {
     }
     let currNode = this.head;
     let previousNode = this.head;
-    while ((currNode !== null) && (currNode.value !== item)) {
+    while (currNode !== null && currNode.value !== item) {
       previousNode = currNode;
       currNode = currNode.next;
     }
     if (currNode === null) {
-      console.log('Item not found');
+      console.log("Item not found");
       return;
     }
     previousNode.next = currNode.next;
@@ -137,7 +132,7 @@ function display(list) {
     console.log(currentNode.value);
     currentNode = currentNode.next;
   }
-
+  if (currentNode) console.log(currentNode.value);
 }
 
 function size(list) {
@@ -153,9 +148,9 @@ function size(list) {
 
 function isEmpty(list) {
   if (list.head === null) {
-    console.log(true);
+    return true;
   } else {
-    console.log(false);
+    return;
   }
 }
 
@@ -188,67 +183,66 @@ function findLast(list) {
 }
 
 function mergeSort(linkedList) {
-  if (isEmpty(linkedList)) {
+  if (isEmpty(linkedList) || linkedList.head.next == null) {
     return linkedList;
   }
 
-  const listSize = size(linkedList);
-  const middle = Math.floor(listSize / 2);
-  let left = linkedList;
-  let leftPointer = linkedList;
-  let leftCounter = 0;
-  while(leftCounter < middle){
-    leftCounter++;
+  let left = new LinkedList();
+  left.head = linkedList.head;  
+  let leftPointer = linkedList.head;
+  let dll = linkedList.head.next;
+
+  while (dll != null && dll.next != null) {
     leftPointer = leftPointer.next;
+    dll = dll.next.next;
   }
 
   let right = new LinkedList();
+
   right.head = leftPointer.next;
   leftPointer.next = null;
 
   left = mergeSort(left);
   right = mergeSort(right);
-  return merge(left, right, linkedList);
+  return merge(left, right, new LinkedList());
 }
 
 function merge(left, right, linkedList) {
-  let leftIndex = 0;
-  let rightIndex = 0;
-  let outputIndex = 0;
+  let leftNode = left.head;
+  let rightNode = right.head;
 
-  let leftSize = size(left);
-  let rightSize = size(right);
-
-  while (leftIndex < leftSize && rightIndex < rightSize) {
-    if (left[leftIndex] < right[rightIndex]) {
-      linkedList[outputIndex++] = left[leftIndex++];
-    }
-    else {
-      linkedList[outputIndex++] = right[rightIndex++];
+  while (leftNode && rightNode) {
+    if (leftNode.value < rightNode.value) {
+      linkedList.insertLast(leftNode.value);
+      leftNode = leftNode.next;
+    } else {
+      linkedList.insertLast(rightNode.value);
+      rightNode = rightNode.next;
     }
   }
+  while (leftNode) {
+    linkedList.insertLast(leftNode.value);
+    leftNode = leftNode.next;
+  }
+  
+  while (rightNode) {
+    linkedList.insertLast(rightNode.value);
+    rightNode = rightNode.next;
+  }
 
-  for (let i = leftIndex; i < leftSize; i++) {
-    linkedList[outputIndex++] = left[i];
-  }
-  for (let i = rightIndex; i < rightSize; i++) {
-    linkedList[outputIndex++] = right[i];
-  }
   return linkedList;
 }
-
 
 function main() {
   let numbersList = new LinkedList();
 
-
-  const dataset = [ 89, 30, 25, 32, 72, 70, 51, 42, 25, 24, 53, 55, 78, 50, 13];
-  for(let i = 0; i<dataset.length; i++){
+  const dataset = [89, 30, 25, 32, 72, 70, 51, 42]; // 25, 24, 53, 55, 78, 50, 13];
+  for (let i = 0; i < dataset.length; i++) {
     numbersList.insertLast(dataset[i]);
   }
-
-
-  console.log(display(numbersList));
+  // console.log(display(numbersList));
+  // mergeSort(numbersList);
+  console.log(display(mergeSort(numbersList)));
 }
 
 main();
